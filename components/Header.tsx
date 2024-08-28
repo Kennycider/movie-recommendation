@@ -43,8 +43,8 @@ const Header = () => {
 
   return (
     <>
-      <header className={`sticky top-0 w-full flex justify-between items-center h-20 border-b px-12 lg:px-64 
-                        ${isHeaderScrolled ? 'bg-red-500' : 'bg-transparent'} transition-colors duration-300`}
+      <header className={`sticky top-0 z-30 w-full flex justify-between items-center h-20 px-12 lg:px-64 
+                        ${isHeaderScrolled ? 'bg-lightBlack' : 'bg-transparent'} transition-colors duration-300`}
       >
         {/* Large screen: Web icon */}
         <div className="">
@@ -64,7 +64,7 @@ const Header = () => {
               <li key={index}>
                 <Link 
                   href={link.href}
-                  className={`${path === link.href ? 'font-bold': 'font-normal'}`}>
+                  className={`text-white ${path === link.href ? 'font-bold': 'font-normal'}`}>
                   {link.name}
                 </Link>
               </li>
