@@ -2,7 +2,7 @@ import Image from "next/image"
 
 const Footer = () => {
   return (
-    <footer className="mt-auto flex justify-center items-center h-20 min-w-full bg-lightBlack">
+    <footer className="mt-auto z-30 flex justify-center items-center h-20 min-w-full bg-lightBlack">
       <div className="w-full flex justify-center lg:container gap-x-5 m-10">
         <Image 
           src="/icons/tmdb.svg"

@@ -64,7 +64,7 @@ const Header = () => {
               <li key={index}>
                 <Link 
                   href={link.href}
-                  className={`text-white ${path === link.href ? 'font-bold': 'font-normal'}`}>
+                  className={`text-white text-md ${path === link.href ? 'font-semibold': 'font-normal'}`}>
                   {link.name}
                 </Link>
               </li>
@@ -75,18 +75,19 @@ const Header = () => {
         {/* Mobile screen: Hamburger icon */}
         <nav className="lg:hidden">
           <Image 
-            src="/icons/Hamburger.png"
+            src="https://img.icons8.com/?size=100&id=8113&format=png&color=FFFFFF"
             alt="Hamburger"
             width={35}
             height={35}
             className="object-contain hover:cursor-pointer"
             onClick={() => setIsHamburgerOpen(true)}
+            priority
           />
         </nav>
       </header>
 
       {/* Mobile screen: Hamburger opened */}
-      <nav className={`fixed top-0 bg-lightBlack w-full
+      <nav className={`fixed top-0 z-30 bg-lightBlack w-full
                     ${isHamburgerOpen ? 'h-full' : 'h-0 overflow-hidden'} transition-[height] duration-200 ease-in`}
       >
         <div className="flex justify-between items-center">
