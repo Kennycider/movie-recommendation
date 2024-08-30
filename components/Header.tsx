@@ -18,10 +18,11 @@ const NAVLINKS = [
 const Header = () => {
   const [isHeaderScrolled, setIsHeaderScrolled] = useState<boolean>(false)
   const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false)
+  const scrollTopTarget = 40
   const path = usePathname()
 
   const handleScroll = () => {
-    if (document.documentElement.scrollTop >= 40) {
+    if (document.documentElement.scrollTop >= scrollTopTarget) {
       setIsHeaderScrolled(true)
     }
     else {
@@ -44,7 +45,7 @@ const Header = () => {
   return (
     <>
       <header className={`sticky top-0 z-30 w-full flex justify-between items-center h-20 px-12 lg:px-64 
-                        ${isHeaderScrolled ? 'bg-lightBlack' : 'bg-transparent'} transition-colors duration-300`}
+                        ${isHeaderScrolled ? 'bg-lightBlack' : 'bg-lightBlack'} transition-colors duration-300`}
       >
         {/* Large screen: Web icon */}
         <div className="">
