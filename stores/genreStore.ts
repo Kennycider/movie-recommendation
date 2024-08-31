@@ -1,15 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-
-interface GenreProp {
-  id: number
-  name: string
-}
-
-interface GenresProp {
-  genres: GenreProp[]
-  setGenres: (data: GenreProp[]) => void
-}
+import { GenreProp, GenresProp } from '@/lib/types/Genre'
 
 const useGenreStore = create<GenresProp>()(
   persist(
