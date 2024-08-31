@@ -1,11 +1,7 @@
-interface MovieGenre {
-  id: number
-}
-
 export default interface Movie {
   adult: boolean
   backdrop_path: string
-  genre_ids: MovieGenre[]
+  genre_ids: number[]
   id: number
   original_language: string
   original_title: string
