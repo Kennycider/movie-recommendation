@@ -6,9 +6,11 @@ interface Props {
 }
 
 export default async function baseFetch({url, options}: Props) {
+  // Determine the prefix for api key
+  const queryPrefix = url.includes('?') ? '&' : '?';
 
   try {
-    const response = await fetch(`${baseURL}${url}?api_key=${process.env.API_KEY}`, options)
+    const response = await fetch(`${baseURL}${url}${queryPrefix}api_key=${process.env.API_KEY}`, options)
 
     if (!response.ok) {
       return response.statusText
