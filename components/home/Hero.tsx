@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 import SearchInput from "./SearchInput";
 import WordFadeIn from "@/components/magicui/word-fade-in";
+import WordPullUp from "@/components/magicui/word-pull-up";
 import { VelocityScroll } from "@/components/magicui/scroll-based-velocity"
 import fetchGenre from "@/actions/movies/fetchGenre";
 import useGenreStore from "@/stores/genreStore";
@@ -41,12 +42,14 @@ const Hero = () => {
       </div>
       <div className="absolute inset-0 bg-[#0000006a] flex flex-col justify-center items-center">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-white text-4xl font-extrabold tracking-tight lg:text-6xl mb-5">
-            Movie recommendations based on your search
-          </h1>
-          
+      
           <WordFadeIn 
-            className="text-white text-2xl mt-5" 
+            className="text-white text-4xl font-extrabold tracking-tight lg:text-6xl mb-5" 
+            words="Movie recommendations based on your search" 
+          />
+          
+          <WordPullUp 
+            className="text-white text-xl mt-10" 
             words="Search something to get started.." 
           />
           
@@ -57,7 +60,7 @@ const Hero = () => {
           <VelocityScroll
             text="Find, Stream, and Fall in Love with Cinema"
             default_velocity={5}
-            className="mt-16 lg:mt-24 font-display text-center text-4xl font-bold tracking-[-0.02em] text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]
+            className="mt-16 lg:mt-40 font-display text-center text-4xl font-bold tracking-[-0.02em] text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]
             dark:text-white md:text-5xl md:leading-[5rem]"
           />
         </div>
