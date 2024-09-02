@@ -1,5 +1,5 @@
 import fetchPopularMovies from "@/actions/movies/fetchPopularMovies";
-import PopularMoviesItem from "./PopularMoviesItem";
+import MovieItem from "../MovieItem";
 import Movie from "@/lib/types/Movie";
 import { Suspense } from "react";
 
@@ -25,7 +25,7 @@ export default async function PopularMoviesContainer() {
       <Suspense fallback={<h1>Loading...</h1>}>
         <div className="w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-10 gap-y-5">
           {popularMoviesData?.map((movie: Movie) => (
-            <PopularMoviesItem 
+            <MovieItem 
               key={movie.id} 
               id={movie.id}
               adult={movie.adult}
