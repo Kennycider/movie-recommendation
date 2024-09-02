@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import Image from "next/image"
 import Movie from "@/lib/types/Movie"
 import { tmdbPaths } from "@/constants/tmdbPaths"
@@ -8,7 +8,7 @@ import useGenreStore from "@/stores/genreStore"
 
 type types = Pick <Movie, "id" | "adult" | "genre_ids" | "original_title" | "poster_path" | "overview" | "vote_average">
 
-const PopularMoviesItem = (movie: types) => {
+const MovieItem = (movie: types) => {
   const { genres } = useGenreStore.getState()
   const [textGenres, setTextGenres] = useState<string[] | null>([])
 
@@ -23,20 +23,22 @@ const PopularMoviesItem = (movie: types) => {
   return (
     <div className="relative w-full min-h-56 lg:h-96 mb-10 lg:mb-0 group">
     {/* Poster */}
-    <Image
-      src={`${tmdbPaths.images.secure_base_url}/w500/${movie.poster_path}`}
-      alt="Hero Banner"
-      fill={true}
-      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      className="object-center object-cover rounded-xl group-hover:opacity-0 transition-opacity duration-300"
-      priority
-    />
+    <Suspense fallback={<h1 className="text-white text-2xl">Loading...</h1>}>
+      <Image
+        src={`${movie.poster_path ? `${tmdbPaths.images.secure_base_url}/w500/${movie.poster_path}`: `/images/question.avif`}`}
+        alt="Poster"
+        fill={true}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        className="object-center object-cover rounded-xl group-hover:opacity-0 transition-opacity duration-300"
+        priority
+      />
+    </Suspense>
   
     {/* Paragraph that shows on hover */}
     <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
       <div className="p-3">
         <p className="text-white text-sm line-clamp-6 lg:line-clamp-[14]">
-          {movie.overview}
+          {movie.overview ? movie.overview : 'No information available'}
         </p>
       </div>
     </div>
@@ -46,9 +48,11 @@ const PopularMoviesItem = (movie: types) => {
         
         {/* Original title and vote average display */}
         <div className="flex justify-between gap-x-2">
-          <p className="text-white text-sm">
-            {movie.original_title}
-          </p>
+          <div className="h-fit max-w-[75%]">
+            <p className="text-white text-sm line-clamp-2">
+              {movie.original_title}
+            </p>
+          </div>
           <p className="text-white font-bold text-sm text-end">
             {(movie.vote_average.toFixed(1)).toString()} / 10
           </p>
@@ -57,7 +61,7 @@ const PopularMoviesItem = (movie: types) => {
         {/* Genre Display */}
         <div className="flex w-[80%]">
           <p className="text-textMuted text-sm line-clamp-2">
-            {textGenres?.join(", ")}
+            {textGenres?.join(", ") ? textGenres?.join(", ") : 'No genre available'}
           </p>
         </div>
       </div>
@@ -67,4 +71,4 @@ const PopularMoviesItem = (movie: types) => {
   )
 }
 
-export default PopularMoviesItem
+export default MovieItem
