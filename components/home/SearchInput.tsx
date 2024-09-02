@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { set, useForm } from "react-hook-form"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -61,7 +61,7 @@ const SearchInput = () => {
   const [ratingsValue, setRatingsValue] = useState<string>("")
 
   const { genres } = useGenreStore.getState()
-  const { setSearchQuery, setResults } = useResultStore.getState()
+  const { setSearchQuery, setResults, setIsFetching } = useResultStore.getState()
 
   // Title and keyword handler
   const form = useForm<z.infer<typeof formSchema>>({
@@ -79,10 +79,12 @@ const SearchInput = () => {
       if (query) {
         handleScrollToResults()
 
+        setIsFetching(true)
         const data = await fetchMovieByTitle({query: query})
 
         setSearchQuery(`${searchByValue} -> ${query}`)
         setResults(data.results)
+        setIsFetching(false)
       }
     }
 
@@ -92,12 +94,14 @@ const SearchInput = () => {
       if (query) {
         handleScrollToResults()
 
+        setIsFetching(true)
         // make array of keywords from e.g "superhero, action, adventure"
         const keywords = query.split(",").map(keyword => keyword.trim())
         const data = await fetchMovieByKeyword({query: keywords})
 
         setSearchQuery(`${searchByValue} -> ${query}`)
         setResults(data.results)
+        setIsFetching(false)
       }
     }
   }
@@ -127,10 +131,12 @@ const SearchInput = () => {
       if (genreValue) {
         handleScrollToResults()
 
+        setIsFetching(true)
         const data = await fetchMovieByGenre({genreId: genreValue})
 
         setSearchQuery(`${searchByValue} -> ${genres.find(val => val.id.toString() === genreValue)?.name}`)
         setResults(data.results)
+        setIsFetching(false)
       }
     }
 
@@ -138,10 +144,12 @@ const SearchInput = () => {
       if (ratingsValue) {
         handleScrollToResults()
 
+        setIsFetching(true)
         const data = await fetchMovieByRatings({rating: ratingsValue})
 
         setSearchQuery(`${searchByValue} -> ${ratingsValue}`)
         setResults(data.results)
+        setIsFetching(false)
       }
     }
   }
