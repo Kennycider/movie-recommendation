@@ -8,7 +8,7 @@ interface Params {
 
 export default async function fetchMovieByTitle(params: Params) {
   try {
-    const data = await baseFetch({url: `/3/search/movie?query=${params.query}&include_adult=true`})
+    const data = await baseFetch({url: `/3/search/movie?query=${params.query}&include_adult=false`})
 
     return data
   } catch (err) {

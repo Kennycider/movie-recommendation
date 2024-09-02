@@ -31,7 +31,7 @@ export default async function fetchMovieByKeyword(params: Params) {
     const joinedKeywordIds = keywordIds.join(",").toString()
     const findKeywordData = await baseFetch({url: `/3/discover/movie?with_keywords=${joinedKeywordIds}`})
 
-    return findKeywordData?.results || []
+    return findKeywordData
   } catch (err) {
     console.error(err)
   }
