@@ -27,6 +27,7 @@ import fetchMovieByTitle from "@/actions/movies/fetchMovieByTitle"
 import fetchMovieByKeyword from "@/actions/movies/fetchMovieByKeyword"
 import fetchMovieByGenre from "@/actions/movies/fetchMovieByGenre"
 import fetchMovieByRatings from "@/actions/movies/fetchMovieByRatings"
+import useResultStore from "@/stores/resultStore"
  
 const formSchema = z.object({
   title: z.string().optional(),
@@ -60,6 +61,7 @@ const SearchInput = () => {
   const [ratingsValue, setRatingsValue] = useState<string>("")
 
   const { genres } = useGenreStore.getState()
+  const { setSearchQuery, setResults } = useResultStore.getState()
 
   // Title and keyword handler
   const form = useForm<z.infer<typeof formSchema>>({
@@ -75,9 +77,12 @@ const SearchInput = () => {
       const query = form.getValues().title
 
       if (query) {
+        handleScrollToResults()
+
         const data = await fetchMovieByTitle({query: query})
 
-        console.log(data)
+        setSearchQuery(`${searchByValue} -> ${query}`)
+        setResults(data.results)
       }
     }
 
@@ -85,11 +90,14 @@ const SearchInput = () => {
       const query = form.getValues().keyword
 
       if (query) {
+        handleScrollToResults()
+
         // make array of keywords from e.g "superhero, action, adventure"
         const keywords = query.split(",").map(keyword => keyword.trim())
         const data = await fetchMovieByKeyword({query: keywords})
 
-        console.log(data)
+        setSearchQuery(`${searchByValue} -> ${query}`)
+        setResults(data.results)
       }
     }
   }
@@ -117,20 +125,39 @@ const SearchInput = () => {
   const onInputHanldersSubmit = async () => {
     if (searchByValue === SEARCH_BY[2].value) { // genre
       if (genreValue) {
+        handleScrollToResults()
+
         const data = await fetchMovieByGenre({genreId: genreValue})
 
-        console.log(data)
+        setSearchQuery(`${searchByValue} -> ${genres.find(val => val.id.toString() === genreValue)?.name}`)
+        setResults(data.results)
       }
     }
 
     if (searchByValue === SEARCH_BY[3].value) { // ratings
       if (ratingsValue) {
+        handleScrollToResults()
+
         const data = await fetchMovieByRatings({rating: ratingsValue})
 
-        console.log(data)
+        setSearchQuery(`${searchByValue} -> ${ratingsValue}`)
+        setResults(data.results)
       }
     }
   }
+
+  // Scroll to results after searching
+  const handleScrollToResults = () => {
+    const element = document.getElementById("results-container");
+
+    // Scroll to the selected project
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - 100,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   return (
     <>
