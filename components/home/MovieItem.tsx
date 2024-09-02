@@ -5,10 +5,12 @@ import Image from "next/image"
 import Movie from "@/lib/types/Movie"
 import { tmdbPaths } from "@/constants/tmdbPaths"
 import useGenreStore from "@/stores/genreStore"
+import { useRouter } from "next/navigation"
 
 type types = Pick <Movie, "id" | "adult" | "genre_ids" | "original_title" | "poster_path" | "overview" | "vote_average">
 
 const MovieItem = (movie: types) => {
+  const router = useRouter()
   const { genres } = useGenreStore.getState()
   const [textGenres, setTextGenres] = useState<string[] | null>([])
 
@@ -20,17 +22,22 @@ const MovieItem = (movie: types) => {
     setTextGenres(matchedGenresId)
   }, [])
 
+  const handleMovieItemClick = () => {
+    router.push(`movie/${movie.id}`)
+  }
+
   return (
-    <div className="relative w-full min-h-56 lg:h-96 mb-10 lg:mb-0 group">
+    <div onClick={handleMovieItemClick} className="relative w-full min-h-56 lg:h-96 mb-10 lg:mb-0 group hover:cursor-pointer">
     {/* Poster */}
-    <Suspense fallback={<h1 className="text-white text-2xl">Loading...</h1>}>
+    <Suspense fallback={<h1 className="text-white text-2xl text-center">Loading...</h1>}>
       <Image
         src={`${movie.poster_path ? `${tmdbPaths.images.secure_base_url}/w500/${movie.poster_path}`: `/images/question.avif`}`}
         alt="Poster"
         fill={true}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className="object-center object-cover rounded-xl group-hover:opacity-0 transition-opacity duration-300"
-        priority
+        placeholder="blur"
+        blurDataURL="/images/blur.avif"
       />
     </Suspense>
   
