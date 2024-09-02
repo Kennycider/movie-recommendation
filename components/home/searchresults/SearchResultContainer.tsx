@@ -11,8 +11,6 @@ export default function SearchResultContainer() {
   const searchQueryValue = useResultStore(state => state.searchQuery)
   const isFetching = useResultStore(state => state.isFetching)
 
-  console.log(isFetching)
-
   return (
     <section id="results-container" className="flex flex-col items-center mt-14 min-h-fit w-full" data-aos="fade-up" data-aos-once="true">
       <h1 className="text-white text-center text-4xl font-extrabold lg:text-6xl mb-10">
