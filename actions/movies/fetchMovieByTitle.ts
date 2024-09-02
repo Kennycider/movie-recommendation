@@ -13,5 +13,7 @@ export default async function fetchMovieByTitle(params: Params) {
     return data
   } catch (err) {
     console.error(err)
+
+    return []
   }
 }

@@ -34,5 +34,7 @@ export default async function fetchMovieByKeyword(params: Params) {
     return findKeywordData
   } catch (err) {
     console.error(err)
+
+    return []
   }
 }

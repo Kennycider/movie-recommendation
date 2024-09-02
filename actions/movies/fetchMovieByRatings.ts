@@ -26,5 +26,7 @@ export default async function fetchMovieByRatings(params: Params) {
     return data;
   } catch (err) {
     console.error(err);
+
+    return []
   }
 }

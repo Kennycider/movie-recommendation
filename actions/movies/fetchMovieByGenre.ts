@@ -13,5 +13,7 @@ export default async function fetchMovieByGenre(params: Params) {
     return data
   } catch (err) {
     console.error(err)
+
+    return []
   }
 }
