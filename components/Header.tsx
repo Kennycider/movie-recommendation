@@ -9,10 +9,6 @@ const NAVLINKS = [
     name: "Home",
     href: "/"
   },
-  {
-    name: "About",
-    href: "/about"
-  },
 ]
 
 const Header = () => {
