@@ -23,7 +23,7 @@ export default async function PopularMoviesContainer() {
         Popular Movies
       </h1>
       <Suspense fallback={<h1>Loading...</h1>}>
-        <div className="w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-10 gap-y-5">
+        <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-10 gap-y-5">
           {popularMoviesData?.map((movie: Movie) => (
             <MovieItem 
               key={movie.id} 
