@@ -16,14 +16,14 @@ const MovieItem = (movie: types) => {
 
   useEffect(() => {
     const matchedGenresId: string[] = genres
-    .filter(genre => movie.genre_ids.includes(genre.id))
+    .filter(genre => movie?.genre_ids?.includes(genre.id))
     .map(genre => genre.name)
 
     setTextGenres(matchedGenresId)
   }, [])
 
   const handleMovieItemClick = () => {
-    router.push(`movie/${movie.id}`)
+    router.push(`/movie/${movie.id}`)
   }
 
   return (
@@ -61,7 +61,7 @@ const MovieItem = (movie: types) => {
             </p>
           </div>
           <p className="text-white font-bold text-sm text-end">
-            {(movie.vote_average.toFixed(1)).toString()} / 10
+            {movie?.vote_average ? (movie.vote_average.toFixed(1)).toString() : 'N/A'} / 10
           </p>
         </div>
   
