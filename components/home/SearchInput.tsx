@@ -28,6 +28,7 @@ import fetchMovieByKeyword from "@/actions/movies/fetchMovieByKeyword"
 import fetchMovieByGenre from "@/actions/movies/fetchMovieByGenre"
 import fetchMovieByRatings from "@/actions/movies/fetchMovieByRatings"
 import useResultStore from "@/stores/resultStore"
+import useSearchMovieStore from "@/stores/searchMovieStore"
  
 const formSchema = z.object({
   title: z.string().optional(),
@@ -56,12 +57,14 @@ const SEARCH_BY = [
 const SELECT_RATINGS = [5, 6, 7, 8, 9, 10]
 
 const SearchInput = () => {
-  const [searchByValue, setSearchByValue] = useState<string>("") // default
+  const searchByStore = useSearchMovieStore(state => state.searchBy)
+  const setSearchByStore = useSearchMovieStore(state => state.setSearchBy)
+
   const [genreValue, setGenreValue] = useState<string>("")
   const [ratingsValue, setRatingsValue] = useState<string>("")
 
   const { genres } = useGenreStore.getState()
-  const { setSearchQuery, setResults, setIsFetching } = useResultStore.getState()
+  const { setSearchQuery, setResults, setIsFetching, setHasSearched } = useResultStore.getState()
 
   // Title and keyword handler
   const form = useForm<z.infer<typeof formSchema>>({
@@ -71,9 +74,16 @@ const SearchInput = () => {
       keyword: "",
     },
   })
+
+  const handleSetResultStore = async (searchByStore: string, query: string, data: any) => {
+    setHasSearched(true)
+    setSearchQuery(`${searchByStore} -> ${query}`)
+    setIsFetching(false)
+    setResults(data)
+  }
   
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (searchByValue === SEARCH_BY[0].value) { // title
+    if (searchByStore === SEARCH_BY[0].value) { // title
       const query = form.getValues().title
 
       if (query) {
@@ -82,13 +92,15 @@ const SearchInput = () => {
         setIsFetching(true)
         const data = await fetchMovieByTitle({query: query})
 
-        setSearchQuery(`${searchByValue} -> ${query}`)
-        setResults(data.results)
-        setIsFetching(false)
+        handleSetResultStore(
+          `${searchByStore}`, 
+          query,
+          data.results
+        )
       }
     }
 
-    if (searchByValue === SEARCH_BY[1].value) { // title
+    if (searchByStore === SEARCH_BY[1].value) { // title
       const query = form.getValues().keyword
 
       if (query) {
@@ -99,9 +111,11 @@ const SearchInput = () => {
         const keywords = query.split(",").map(keyword => keyword.trim())
         const data = await fetchMovieByKeyword({query: keywords})
 
-        setSearchQuery(`${searchByValue} -> ${query}`)
-        setResults(data.results)
-        setIsFetching(false)
+        handleSetResultStore(
+          `${searchByStore}`, 
+          query,
+          data.results
+        )
       }
     }
   }
@@ -111,11 +125,11 @@ const SearchInput = () => {
     form.reset()
     setGenreValue("")
     setRatingsValue("")
-  }, [searchByValue, form])
+  }, [searchByStore, form])
 
   // Input handlers
   const handleSearchByValue = (value: string) => {
-    setSearchByValue(value)
+    setSearchByStore(value)
   }
   
   const handleGenreValue = (value: string) => {
@@ -127,29 +141,33 @@ const SearchInput = () => {
   }
 
   const onInputHanldersSubmit = async () => {
-    if (searchByValue === SEARCH_BY[2].value) { // genre
+    if (searchByStore === SEARCH_BY[2].value) { // genre
       if (genreValue) {
         handleScrollToResults()
 
         setIsFetching(true)
         const data = await fetchMovieByGenre({genreId: genreValue})
 
-        setSearchQuery(`${searchByValue} -> ${genres.find(val => val.id.toString() === genreValue)?.name}`)
-        setResults(data.results)
-        setIsFetching(false)
+        handleSetResultStore(
+          `${searchByStore}`, 
+          `${genres.find(val => val.id.toString() === genreValue)?.name}`,
+          data.results
+        )
       }
     }
 
-    if (searchByValue === SEARCH_BY[3].value) { // ratings
+    if (searchByStore === SEARCH_BY[3].value) { // ratings
       if (ratingsValue) {
         handleScrollToResults()
 
         setIsFetching(true)
         const data = await fetchMovieByRatings({rating: ratingsValue})
 
-        setSearchQuery(`${searchByValue} -> ${ratingsValue}`)
-        setResults(data.results)
-        setIsFetching(false)
+        handleSetResultStore(
+          `${searchByStore}`, 
+          `${ratingsValue}`,
+          data.results
+        )
       }
     }
   }
@@ -170,9 +188,9 @@ const SearchInput = () => {
   return (
     <>
       <div className="flex justify-center w-full mt-0 lg:mt-[-20px]"> 
-        <Select onValueChange={handleSearchByValue}>
+        <Select onValueChange={handleSearchByValue} value={searchByStore}>
           <SelectTrigger 
-            className={`${searchByValue === '' ? 'w-[300px]': 'w-[120px]'} font-semibold bg-white text-black
+            className={`${searchByStore === '' ? 'w-[300px]': 'w-[120px]'} font-semibold bg-white text-black
                       ring-0 border-0 focus-visible:ring-offset-0 focus-visible:ring-0 mr-3`}>
             <SelectValue placeholder="Search by" />
           </SelectTrigger>
@@ -189,7 +207,7 @@ const SearchInput = () => {
           </SelectContent>
         </Select>
         {/* [0] -> title */}
-        {searchByValue === SEARCH_BY[0].value ? (
+        {searchByStore === SEARCH_BY[0].value ? (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full lg:w-1/2 gap-x-3">
               <FormField
@@ -215,7 +233,7 @@ const SearchInput = () => {
               </Button>
             </form>
           </Form>
-        ) : /* [1] -> keyword */ searchByValue === SEARCH_BY[1].value ? (
+        ) : /* [1] -> keyword */ searchByStore === SEARCH_BY[1].value ? (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full lg:w-1/2 gap-x-3">
               <FormField
@@ -241,7 +259,7 @@ const SearchInput = () => {
               </Button>
             </form>
           </Form>
-        ) : /* [2] -> genre */ searchByValue === SEARCH_BY[2].value ? (
+        ) : /* [2] -> genre */ searchByStore === SEARCH_BY[2].value ? (
           <>
             <Select onValueChange={handleGenreValue} value={genreValue}>
               <SelectTrigger 
@@ -269,7 +287,7 @@ const SearchInput = () => {
               Search
             </Button>
           </>
-        ) : /* [3] -> ratings */ searchByValue === SEARCH_BY[3].value ? (
+        ) : /* [3] -> ratings */ searchByStore === SEARCH_BY[3].value ? (
           <>
             <Select onValueChange={handleRatingsValue} value={ratingsValue}>
               <SelectTrigger 
