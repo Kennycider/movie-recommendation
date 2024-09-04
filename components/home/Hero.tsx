@@ -44,7 +44,7 @@ const Hero = () => {
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       
           <WordFadeIn 
-            className="text-white text-4xl font-extrabold tracking-tight lg:text-6xl mb-5" 
+            className="text-white text-5xl font-extrabold tracking-tight lg:text-6xl mb-5" 
             words="Movie recommendations based on your search" 
           />
           
