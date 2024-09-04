@@ -9,6 +9,8 @@ export interface ResultStoreProp {
   setIsFetching: (data: boolean) => void
   results: Movie[]
   setResults: (data: Movie[]) => void
+  hasSearched: boolean
+  setHasSearched: (data: boolean) => void
 }
 
 const useResultStore = create<ResultStoreProp>()(
@@ -19,7 +21,9 @@ const useResultStore = create<ResultStoreProp>()(
       isFetching: false,
       setIsFetching: (data) => set({ isFetching: data }),
       results: [],
-      setResults: (data) => set({ results: data })
+      setResults: (data) => set({ results: data }),
+      hasSearched: false,
+      setHasSearched: (data) => set({hasSearched: data})
     }),
     {
       name: 'search-result-storage',

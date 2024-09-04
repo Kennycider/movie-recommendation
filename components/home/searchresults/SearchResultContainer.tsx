@@ -10,45 +10,55 @@ export default function SearchResultContainer() {
   const results = useResultStore(state => state.results)
   const searchQueryValue = useResultStore(state => state.searchQuery)
   const isFetching = useResultStore(state => state.isFetching)
+  const hasSearched = useResultStore(state => state.hasSearched)
 
   return (
-    <section id="results-container" className="flex flex-col items-center mt-14 min-h-fit w-full" data-aos="fade-up" data-aos-once="true">
-      <h1 className="text-white text-center text-4xl font-extrabold lg:text-6xl mb-10">
-        Results
-      </h1>
-      <div className="flex justify-start items-start w-full mb-2">
-        <p className="text-textMuted text-sm">
-          {searchQueryValue ? `Search by: ${searchQueryValue}` : ''}
-        </p>
-      </div>
-      <Suspense fallback={<h1 className="text-white text-2xl">Loading...</h1>}>
-        <div className="w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-10 gap-y-5">
-          {!isFetching && results && results?.map((movie: Movie) => (
-            <MovieItem 
-              key={movie.id} 
-              id={movie.id}
-              adult={movie.adult}
-              genre_ids={movie.genre_ids}
-              original_title={movie.original_title}
-              poster_path={movie.poster_path}
-              overview={movie.overview}
-              vote_average={movie.vote_average}
-            />
-          ))}
-          {isFetching && (
-            <>
-              {Array.from({length: 10}).map((_, index) => (
-                <Skeleton key={index} className="w-[240px] h-72 rounded-lg bg-gray-400" />
-              ))}
-            </>
-          )}
-        </div>
-        {!isFetching && results?.length === 0 && (
-          <h1 className="text-white text-lg">
-            No results found
+    <section 
+      id="results-container" 
+      className={`flex flex-col items-center ${hasSearched ? 'mt-14': 'mt-0'} min-h-fit w-full`} 
+      data-aos="fade-up" 
+      data-aos-once="true"
+    >
+      {hasSearched &&
+        <>
+          <h1 className="text-white text-center text-4xl font-extrabold lg:text-6xl mb-10">
+            Results
           </h1>
-        )}
-      </Suspense>
+          <div className="flex justify-start items-start w-full mb-2">
+            <p className="text-textMuted text-sm">
+              {searchQueryValue ? `Search by: ${searchQueryValue}` : ''}
+            </p>
+          </div>
+          <Suspense fallback={<h1 className="text-white text-2xl">Loading...</h1>}>
+            <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-10 gap-y-5">
+              {!isFetching && results && results?.map((movie: Movie) => (
+                <MovieItem 
+                  key={movie.id} 
+                  id={movie.id}
+                  adult={movie.adult}
+                  genre_ids={movie.genre_ids}
+                  original_title={movie.original_title}
+                  poster_path={movie.poster_path}
+                  overview={movie.overview}
+                  vote_average={movie.vote_average}
+                />
+              ))}
+              {isFetching && (
+                <>
+                  {Array.from({length: 10}).map((_, index) => (
+                    <Skeleton key={index} className="w-full lg:w-[240px] h-40 lg:h-72 rounded-lg bg-gray-400" />
+                  ))}
+                </>
+              )}
+            </div>
+            {!isFetching && results?.length === 0 && (
+              <h1 className="text-white text-lg">
+                No results found
+              </h1>
+            )}
+          </Suspense>
+        </>
+      }
     </section>
   )
 }
