@@ -9,6 +9,14 @@ const NAVLINKS = [
     name: "Home",
     href: "/"
   },
+  {
+    name: "Recommendations",
+    href: "/recommendations"
+  },
+  {
+    name: "Login",
+    href: "/login"
+  },
 ]
 
 const Header = () => {
@@ -45,13 +53,17 @@ const Header = () => {
       >
         {/* Large screen: Web icon */}
         <div className="">
-          <Image 
-            src="/icons/Film.png"
-            alt="Film"
-            width={50}
-            height={50}
-            className="object-contain"
-          />
+          <Link
+            href="/"
+          >
+            <Image 
+              src="/icons/Film.png"
+              alt="Film"
+              width={50}
+              height={50}
+              className="object-contain"
+            />
+          </Link>
         </div>
         
         {/* Large screen: Navlinks */}
