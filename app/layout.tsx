@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import AOS from "@/components/AOS"
 import { Suspense } from "react";
 import ClientSideScrollRestorer from "@/components/ClientSideScrollRestorer";
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-lightBlack`}>
         <AOS />
+        <Toaster />
         <Suspense>
           <ClientSideScrollRestorer />
         </Suspense>
