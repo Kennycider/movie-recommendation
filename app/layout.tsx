@@ -7,6 +7,7 @@ import AOS from "@/components/AOS"
 import { Suspense } from "react";
 import ClientSideScrollRestorer from "@/components/ClientSideScrollRestorer";
 import { Toaster } from "@/components/ui/toaster"
+import { AuthProvider } from "@/lib/providers"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,8 +29,10 @@ export default function RootLayout({
         <Suspense>
           <ClientSideScrollRestorer />
         </Suspense>
-
-        <Header />
+        
+        <AuthProvider>
+          <Header />
+        </AuthProvider>
           {children}
         <Footer />
       </body>

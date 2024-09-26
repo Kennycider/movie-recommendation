@@ -58,34 +58,39 @@ const Signup = () => {
 
     const { username, password } = form.getValues()
 
-    // const data = await signup({ username, password })
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
 
-    // if (data === undefined || data === null) {
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Invalid username or password, please try again.",
-    //   })
+      const data = await response.json()
+  
+      if (!response.ok) {
+        toast({
+          variant: "destructive",
+          title: data?.error
+        })
+      }
+      else {
+        // add notif to local storage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('notification', 'Account created successfully')
+        }
+        
+        router.push('/login')
+      }
+    } catch (err: any) {
+      console.error(err)
 
-    //   setSubmitting(false)
-    //   return
-    // }
-
-    // if (data?.reason) {
-    //   toast({
-    //     variant: "destructive",
-    //     title: data.message
-    //   })
-
-    //   setSubmitting(false)
-    //   return
-    // }
-
-    // add notif to local storage
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('notification', 'Account created successfully')
+      toast({
+        variant: "destructive",
+        title: "Error occured, please try again later."
+      })
     }
-    
-    router.push('login')
+
+    setSubmitting(false)
   }
 
   return (
@@ -154,7 +159,7 @@ const Signup = () => {
             )}
           />
           <div className="flex justify-center items-center">
-            <Button className="lg:w-[25%] bg-red-700 hover:bg-red-600 disabled:bg-gray-500" type="submit" disabled={submitting}>
+            <Button className="px-5 bg-red-700 hover:bg-red-600 disabled:bg-gray-500" type="submit" disabled={submitting}>
               {submitting ? 'Signing up...' : 'Sign up'}
             </Button>  
           </div>

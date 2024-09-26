@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/hooks/use-toast"
+import { useRouter } from "next/navigation"
 
 import {
   Form,
@@ -18,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import Link from "next/link"
+import { signIn } from "next-auth/react"
 
 const formSchema = z.object({
   username: 
@@ -32,6 +34,7 @@ const formSchema = z.object({
 
 const Login = () => {
   const { toast } = useToast()
+  const router = useRouter()
   const [submitting, setSubmitting] = useState<boolean>(false)
 
   useEffect(() => {
@@ -58,21 +61,32 @@ const Login = () => {
     if (submitting) return
     setSubmitting(true)
 
-    const formValues = form.getValues()
+    const { username, password } = form.getValues()
 
-    // const data = await login(formValues)
-    // if (data === undefined || data === null) {
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Invalid username or password, please try again.",
-    //   })
+    try {
+      const result = await signIn('credentials', {
+        redirect: true,
+        redirectTo: "/",
+        username,
+        password,
+      })
+        
+      if (result?.error) {
+        toast({
+          variant: "destructive",
+          title: "Incorrect username or password."
+        });
+      }
+    } catch (err: any) {
+      console.error(err)
 
-    //   setSubmitting(false)
-    //   return
-    // }
+      toast({
+        variant: "destructive",
+        title: "An error occured, please try again later."
+      });
+    }    
 
-    // window.location.href = "/items"
-    // setLogin()
+    setSubmitting(false)
   }
 
   return (
@@ -123,7 +137,7 @@ const Login = () => {
             )}
           />
           <div className="flex justify-center items-center">
-            <Button className="lg:w-[25%] bg-red-700 hover:bg-red-600 disabled:bg-gray-500" type="submit" disabled={submitting}>
+            <Button className="px-5 bg-red-700 hover:bg-red-600 disabled:bg-gray-500" type="submit" disabled={submitting}>
               {submitting ? "Logging in..." : "Log in"}
             </Button>  
           </div>
