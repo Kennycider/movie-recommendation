@@ -21,7 +21,6 @@ const Page = () => {
     const handleGetRecommendations = async () => {
       try {
         setIsFetching(true)
-
         const data: any = await fetchUserMovieRecommendation();
 
         if (data.length >= SearchTargetValue) {
