@@ -11,7 +11,7 @@ import WordFadeIn from "@/components/magicui/word-fade-in";
 import { Skeleton } from "@/components/ui/skeleton"
 import { useState, useEffect } from "react"
 
-const page = () => {
+const Page = () => {
   const [recommendationsData, setRecommendationsData] = useState<Movie[]>([]);
   const SearchTargetValue = 5
   const [userTotalSearches, setUserTotalSearches] = useState(0)
@@ -103,4 +103,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
