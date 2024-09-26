@@ -27,6 +27,7 @@ import fetchMovieByTitle from "@/actions/movies/fetchMovieByTitle"
 import fetchMovieByKeyword from "@/actions/movies/fetchMovieByKeyword"
 import fetchMovieByGenre from "@/actions/movies/fetchMovieByGenre"
 import fetchMovieByRatings from "@/actions/movies/fetchMovieByRatings"
+import storeUserMovieSearch from "@/actions/user/storeUserMovieSearch"
 import useResultStore from "@/stores/resultStore"
 import useSearchMovieStore from "@/stores/searchMovieStore"
  
@@ -75,6 +76,7 @@ const SearchInput = () => {
     },
   })
 
+  // Store to zustand
   const handleSetResultStore = async (searchByStore: string, query: string, data: any) => {
     setHasSearched(true)
     setSearchQuery(`${searchByStore} -> ${query}`)
@@ -92,15 +94,25 @@ const SearchInput = () => {
         setIsFetching(true)
         const data = await fetchMovieByTitle({query: query})
 
+        // Store to zustand
         handleSetResultStore(
           `${searchByStore}`, 
           query,
           data.results
         )
+
+        // Check if result is good before saving to database
+        if (data.results.length > 0) {
+          // Call server action, store data
+          storeUserMovieSearch({
+            searchType: searchByStore,
+            searchQuery: query
+          })
+        }
       }
     }
 
-    if (searchByStore === SEARCH_BY[1].value) { // title
+    if (searchByStore === SEARCH_BY[1].value) { // keyword
       const query = form.getValues().keyword
 
       if (query) {
@@ -111,11 +123,21 @@ const SearchInput = () => {
         const keywords = query.split(",").map(keyword => keyword.trim())
         const data = await fetchMovieByKeyword({query: keywords})
 
+        // Store to zustand
         handleSetResultStore(
           `${searchByStore}`, 
           query,
           data.results
         )
+
+        // Check if result is good before saving to database
+        if (data.results.length > 0) {
+          // Call server action, store data
+          storeUserMovieSearch({
+            searchType: searchByStore,
+            searchQuery: query
+          })
+        }
       }
     }
   }
@@ -148,11 +170,21 @@ const SearchInput = () => {
         setIsFetching(true)
         const data = await fetchMovieByGenre({genreId: genreValue})
 
+        // Store to zustand
         handleSetResultStore(
           `${searchByStore}`, 
           `${genres.find(val => val.id.toString() === genreValue)?.name}`,
           data.results
         )
+
+        // Check if result is good before saving to database
+        if (data.results.length > 0) {
+          // Call server action, store data
+          storeUserMovieSearch({
+            searchType: searchByStore,
+            searchQuery: genreValue
+          })
+        }
       }
     }
 
@@ -163,11 +195,21 @@ const SearchInput = () => {
         setIsFetching(true)
         const data = await fetchMovieByRatings({rating: ratingsValue})
 
+        // Store to zustand
         handleSetResultStore(
           `${searchByStore}`, 
           `${ratingsValue}`,
           data.results
         )
+
+        // Check if result is good before saving to database
+        if (data.results.length > 0) {
+          // Call server action, store data
+          storeUserMovieSearch({
+            searchType: searchByStore,
+            searchQuery: ratingsValue
+          })
+        }
       }
     }
   }
