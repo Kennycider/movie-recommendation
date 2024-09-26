@@ -3,8 +3,12 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { signOut } from 'next-auth/react';
+import useResultStore from "@/stores/resultStore"
 
-const NAVLINKS = [
+const AUTH_NAVLINKS = [
   {
     name: "Home",
     href: "/"
@@ -13,13 +17,21 @@ const NAVLINKS = [
     name: "Recommendations",
     href: "/recommendations"
   },
+]
+
+const PUBLIC_NAVLINKS = [
   {
     name: "Login",
     href: "/login"
-  },
+  }
 ]
 
 const Header = () => {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  const resetResultStore = useResultStore(state => state.resetResults)
+  const resetHasSearched = useResultStore(state => state.setHasSearched)
+
   const [isHeaderScrolled, setIsHeaderScrolled] = useState<boolean>(false)
   const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false)
   const scrollTopTarget = 40
@@ -35,6 +47,12 @@ const Header = () => {
   }
 
   useEffect(() => {
+    // When logout/session expired, clear search result
+    if (!session) {
+      resetResultStore()
+      resetHasSearched(false)
+    }
+
     window.addEventListener('scroll', handleScroll)
     
     return () => {
@@ -42,9 +60,42 @@ const Header = () => {
     }
   }, [])
 
-  useEffect(() => {
-    
-  }, [isHamburgerOpen])
+  const handleLogoutClick = async () => {
+    signOut()
+    .then(() => {
+      router.push("/login")
+      router.refresh()
+    })
+  }
+
+  const renderNavLinks = () => {
+    if (status === "loading") {
+      return <li></li>
+    }
+
+    const navLinks = session ? AUTH_NAVLINKS : PUBLIC_NAVLINKS
+
+    return (
+      <>
+        {navLinks.map((link, index) => (
+          <li key={index}>
+            <Link 
+              href={link.href}
+              className={`text-white text-md ${path === link.href ? 'font-semibold': 'font-normal'}`}>
+              {link.name}
+            </Link>
+          </li>
+        ))}
+        {session && 
+          <li>
+            <p className="text-white text-md font-normal hover:cursor-pointer" onClick={handleLogoutClick}>
+              Logout
+            </p>
+          </li>
+        }
+      </>
+    )
+  }
 
   return (
     <>
@@ -69,15 +120,7 @@ const Header = () => {
         {/* Large screen: Navlinks */}
         <nav className="hidden lg:block">
           <ul className="flex gap-x-10">
-            {NAVLINKS.map((link, index) => (
-              <li key={index}>
-                <Link 
-                  href={link.href}
-                  className={`text-white text-md ${path === link.href ? 'font-semibold': 'font-normal'}`}>
-                  {link.name}
-                </Link>
-              </li>
-            ))}
+            {renderNavLinks()}
           </ul>
         </nav>
 
@@ -103,22 +146,12 @@ const Header = () => {
           {/* Left side */}
           <div className="flex flex-col justify-center items-start w-1/2 ml-10 mt-24">
             <ul className="space-y-5">
-              {NAVLINKS.map((link, index) => (
-                <li key={index}>
-                  <Link 
-                    href={link.href} 
-                    className={`text-white text-xl ${path === link.href ? 'font-semibold' : 'font-normal'}`}
-                    onClick={() => setIsHamburgerOpen(false)}
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
+              {renderNavLinks()}
             </ul>
           </div>
           
           {/* Right side */}
-          <div className="w-1/2 flex justify-end items-end">
+          <div className="w-1/2 flex justify-end items-end z-30">
             <div 
               className={`absolute top-10 right-10`}
               onClick={() => setIsHamburgerOpen(false)}>
