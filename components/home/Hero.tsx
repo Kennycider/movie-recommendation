@@ -14,6 +14,8 @@ const Hero = () => {
   const { data: session } = useSession()
   const { genres, setGenres } = useGenreStore.getState()
 
+  const welcomeMessage = session ? `${session.user?.username + '!' || 'fellow user!'} welcome back.` : ''
+
   useEffect(() => {
     const handleFetchGenre = async () => {
       try {
@@ -47,7 +49,7 @@ const Hero = () => {
       
           <WordFadeIn 
             className="text-white text-5xl font-extrabold tracking-tight lg:text-6xl mb-5" 
-            words={`Hello, ${session?.user?.username + '!' || 'fellow user!'} welcome back.`}
+            words={`Hello, ${welcomeMessage}`}
           />
           
           <WordPullUp 

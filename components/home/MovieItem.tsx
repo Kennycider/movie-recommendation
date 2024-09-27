@@ -29,18 +29,15 @@ const MovieItem = (movie: types) => {
   return (
     <div onClick={handleMovieItemClick} className="relative w-full min-h-56 lg:h-96 mb-10 lg:mb-0 group hover:cursor-pointer">
     {/* Poster */}
-    <Suspense fallback={<h1 className="text-white text-2xl text-center">Loading...</h1>}>
-      <Image
-        src={`${movie.poster_path ? `${tmdbPaths.images.secure_base_url}/w500/${movie.poster_path}`: `/images/question.avif`}`}
-        alt="Poster"
-        fill={true}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        className="object-center object-cover rounded-xl group-hover:opacity-0 transition-opacity duration-300"
-        placeholder="blur"
-        blurDataURL="/images/HeroBanner.jpg"
-        unoptimized={true}
-      />
-    </Suspense>
+    <Image
+      src={`${movie.poster_path ? `${tmdbPaths.images.secure_base_url}/w500/${movie.poster_path}`: `/images/question.avif`}`}
+      alt="Poster"
+      fill={true}
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      className="object-center object-cover rounded-xl group-hover:opacity-0 transition-opacity duration-300"
+      placeholder="blur"
+      blurDataURL="/images/blur.avif"
+    />
   
     {/* Paragraph that shows on hover */}
     <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
