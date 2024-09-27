@@ -80,6 +80,12 @@ const Page = () => {
 
   return (
     <div className={`container flex flex-col justify-center  min-h-[calc(100vh-10rem)] py-10 ${userTotalSearches >= SearchTargetValue  ? '' : 'items-center'}`}>
+      {isFetching &&
+        <WordFadeIn 
+          className="text-white text-3xl font-extrabold tracking-normal lg:text-4xl mb-5" 
+          words={`Loading..`}
+        />
+      }
       {isFetching && userTotalSearches >= SearchTargetValue && (
         <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-10 gap-y-5">
           {Array.from({length: 15}).map((_, index) => (
