@@ -37,7 +37,7 @@ const MovieItem = (movie: types) => {
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className="object-center object-cover rounded-xl group-hover:opacity-0 transition-opacity duration-300"
         placeholder="blur"
-        blurDataURL="/images/blur.avif"
+        blurDataURL="/images/HeroBanner.jpg"
       />
     </Suspense>
   
