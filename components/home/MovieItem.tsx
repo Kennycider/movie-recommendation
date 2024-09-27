@@ -38,6 +38,7 @@ const MovieItem = (movie: types) => {
         className="object-center object-cover rounded-xl group-hover:opacity-0 transition-opacity duration-300"
         placeholder="blur"
         blurDataURL="/images/HeroBanner.jpg"
+        unoptimized={true}
       />
     </Suspense>
   
