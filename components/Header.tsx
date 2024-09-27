@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { signOut } from 'next-auth/react';
 import useResultStore from "@/stores/resultStore"
+import useSearchMovieStore from "@/stores/searchMovieStore"
 
 const AUTH_NAVLINKS = [
   {
@@ -31,6 +32,7 @@ const Header = () => {
   const router = useRouter()
   const resetResultStore = useResultStore(state => state.resetResults)
   const resetHasSearched = useResultStore(state => state.setHasSearched)
+  const resetSearchBy = useSearchMovieStore(state => state.resetSearchBy)
 
   const [isHeaderScrolled, setIsHeaderScrolled] = useState<boolean>(false)
   const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false)
@@ -51,6 +53,7 @@ const Header = () => {
     if (!session) {
       resetResultStore()
       resetHasSearched(false)
+      resetSearchBy()
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -78,7 +81,7 @@ const Header = () => {
     return (
       <>
         {navLinks.map((link, index) => (
-          <li key={index}>
+          <li key={index} onClick={() => setIsHamburgerOpen(false)}>
             <Link 
               href={link.href}
               className={`text-white text-md ${path === link.href ? 'font-semibold': 'font-normal'}`}>
