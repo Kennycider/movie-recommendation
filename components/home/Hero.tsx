@@ -8,8 +8,10 @@ import WordPullUp from "@/components/magicui/word-pull-up";
 import { VelocityScroll } from "@/components/magicui/scroll-based-velocity"
 import fetchGenre from "@/actions/movies/fetchGenre";
 import useGenreStore from "@/stores/genreStore";
+import { useSession } from "next-auth/react"
 
 const Hero = () => {
+  const { data: session } = useSession()
   const { genres, setGenres } = useGenreStore.getState()
 
   useEffect(() => {
@@ -45,7 +47,7 @@ const Hero = () => {
       
           <WordFadeIn 
             className="text-white text-5xl font-extrabold tracking-tight lg:text-6xl mb-5" 
-            words="Movie recommendations based on your search" 
+            words={`Hello, ${session?.user?.username + '!' || 'fellow user!'} welcome back.`}
           />
           
           <WordPullUp 
