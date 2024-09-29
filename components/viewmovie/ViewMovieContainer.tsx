@@ -8,6 +8,7 @@ import WordFadeIn from "../magicui/word-fade-in"
 import TypingAnimation from "@/components/magicui/typing-animation";
 import ViewMovie from "@/lib/types/ViewMovie"
 import MovieCredits from "@/lib/types/MovieCredits"
+import { MovieItemBlurDataUrl } from "@/lib/utils"
 
 const ViewMovieContainer = async ({id}: {id: number | string}) => {
   const [data, credits]: [ViewMovie, MovieCredits[]] = await Promise.all([
@@ -72,7 +73,7 @@ const ViewMovieContainer = async ({id}: {id: number | string}) => {
           fill={true}
           className="object-cover"
           placeholder="blur"
-          blurDataURL={blurData}
+          blurDataURL={blurData || MovieItemBlurDataUrl}
           priority
         />
         <div className="absolute top-0 left-0 w-full h-full

@@ -15,12 +15,11 @@ const Page = () => {
   const [recommendationsData, setRecommendationsData] = useState<Movie[]>([]);
   const SearchTargetValue = 5
   const [userTotalSearches, setUserTotalSearches] = useState(0)
-  const [isFetching, setIsFetching] = useState(false)
+  const [isFetching, setIsFetching] = useState(true)
 
   useEffect(() => {
     const handleGetRecommendations = async () => {
       try {
-        setIsFetching(true)
         const data: any = await fetchUserMovieRecommendation();
 
         if (data.length >= SearchTargetValue) {

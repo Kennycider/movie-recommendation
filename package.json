@@ -31,6 +31,7 @@
     "next": "14.2.5",
     "next-auth": "^5.0.0-beta.21",
     "next-scroll-restorer": "^0.9.7",
+    "nextjs-toploader": "^3.6.15",
     "plaiceholder": "^3.0.0",
     "react": "^18",
     "react-dom": "^18",

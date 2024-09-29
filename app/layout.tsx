@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import ClientSideScrollRestorer from "@/components/ClientSideScrollRestorer";
 import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/lib/providers"
+import NextTopLoader from "@/components/NextTopLoader"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-lightBlack`}>
         <AOS />
         <Toaster />
+        <NextTopLoader />
         <Suspense>
           <ClientSideScrollRestorer />
         </Suspense>
