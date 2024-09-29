@@ -14,17 +14,20 @@ import { useState, useEffect } from "react"
 const Page = () => {
   const [recommendationsData, setRecommendationsData] = useState<Movie[]>([]);
   const SearchTargetValue = 5
+  const offset = 2
   const [userTotalSearches, setUserTotalSearches] = useState(0)
   const [isFetching, setIsFetching] = useState(true)
 
   useEffect(() => {
     const handleGetRecommendations = async () => {
       try {
+        // Fetch top user search/interact
         const data: any = await fetchUserMovieRecommendation();
 
         if (data.length >= SearchTargetValue) {
           setUserTotalSearches(data.length)
 
+          // Fetch each user's top ranked based on searchType
           const results = await Promise.all(
             data.map(async (result: any) => {
               let response;
@@ -48,10 +51,14 @@ const Page = () => {
                 response = await fetchMovieByRatings({
                   rating: result.searchQuery,
                 });
+              } else if (result.searchType === 'movie-click') {
+                response = await fetchMovieByGenre({
+                  genreId: result.searchQuery,
+                })
               }
 
               if (response) {
-                return response?.results?.slice(0, 3);
+                return response?.results?.slice(offset, offset + (15 / SearchTargetValue));
               }
 
               return null; // Return null if no valid searchType matched
@@ -78,7 +85,7 @@ const Page = () => {
   }, []); 
 
   return (
-    <div className={`container flex flex-col justify-center  min-h-[calc(100vh-10rem)] py-10 ${userTotalSearches >= SearchTargetValue  ? '' : 'items-center'}`}>
+    <div className={`container flex flex-col justify-center min-h-[calc(100vh-10rem)] py-10 ${userTotalSearches >= SearchTargetValue  ? '' : 'items-center'}`}>
       {isFetching &&
         <WordFadeIn 
           className="text-white text-3xl font-extrabold tracking-normal lg:text-4xl mb-5" 
@@ -99,8 +106,8 @@ const Page = () => {
       } 
       {!isFetching && userTotalSearches < SearchTargetValue &&
         <WordFadeIn 
-          className="text-white text-3xl font-extrabold tracking-normal lg:text-4xl mb-5" 
-          words={`Search ${SearchTargetValue - userTotalSearches} more to get recommendations..`}
+          className="max-w-[50%] text-center text-white text-3xl font-extrabold tracking-normal lg:text-4xl mb-5" 
+          words={`Search ${SearchTargetValue - userTotalSearches} more movie to get recommendations..`}
         />
       }
     </div>

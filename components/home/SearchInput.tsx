@@ -82,6 +82,7 @@ const SearchInput = () => {
     setSearchQuery(`${searchByStore} -> ${query}`)
     setIsFetching(false)
     setResults(data)
+    handleScrollToResults()
   }
   
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -89,7 +90,6 @@ const SearchInput = () => {
       const query = form.getValues().title
 
       if (query) {
-        handleScrollToResults()
 
         setIsFetching(true)
         const data = await fetchMovieByTitle({query: query})
@@ -116,8 +116,6 @@ const SearchInput = () => {
       const query = form.getValues().keyword
 
       if (query) {
-        handleScrollToResults()
-
         setIsFetching(true)
         // make array of keywords from e.g "superhero, action, adventure"
         const keywords = query.split(",").map(keyword => keyword.trim())
@@ -165,8 +163,6 @@ const SearchInput = () => {
   const onInputHanldersSubmit = async () => {
     if (searchByStore === SEARCH_BY[2].value) { // genre
       if (genreValue) {
-        handleScrollToResults()
-
         setIsFetching(true)
         const data = await fetchMovieByGenre({genreId: genreValue})
 
@@ -190,8 +186,6 @@ const SearchInput = () => {
 
     if (searchByStore === SEARCH_BY[3].value) { // ratings
       if (ratingsValue) {
-        handleScrollToResults()
-
         setIsFetching(true)
         const data = await fetchMovieByRatings({rating: ratingsValue})
 

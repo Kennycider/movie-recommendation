@@ -11,10 +11,12 @@ import useGenreStore from "@/stores/genreStore";
 import { useSession } from "next-auth/react"
 
 const Hero = () => {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const { genres, setGenres } = useGenreStore.getState()
 
-  const welcomeMessage = session ? `${session.user?.username + '!' || 'fellow user!'} welcome back.` : ''
+  const welcomeMessage = status !== 'loading' 
+  ? `Hello, ${session?.user?.username + '!' || 'fellow user!'} welcome back.` 
+  : ''
 
   useEffect(() => {
     const handleFetchGenre = async () => {
@@ -49,7 +51,7 @@ const Hero = () => {
       
           <WordFadeIn 
             className="text-white text-5xl font-extrabold tracking-tight lg:text-6xl mb-5" 
-            words={`Hello, ${welcomeMessage}`}
+            words={`${welcomeMessage}`}
           />
           
           <WordPullUp 

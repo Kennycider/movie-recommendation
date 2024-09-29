@@ -6,30 +6,47 @@ import { prisma } from "@/lib/prisma"
 export default async function fetchUserMovieRecommendation() {
   const session = await auth()
 
-  try {
-    const topSearches = await prisma.userSearch.findMany({
-      orderBy: [
-        {
-          searchCount: 'desc',  // First, order by highest searchCount
-        },
-        {
-          updatedAt: 'desc',    // Then, order by the latest updatedAt (if searchCount is the same)
-        }
-      ],
-      where:{
-        userId: session?.user?.id
-      },
-      take: 5,  // Limit the result to 3 rows
-    });
-    
-    return topSearches
-  } catch(err) {
-    console.error(err)
+  if (!session?.user?.id) {
+    console.error("No user session found")
+    return null
+  }
 
+  try {
+    // First, fetch the top 'movie-click' search
+    const topMovieClick = await prisma.userSearch.findFirst({
+      where: {
+        userId: session.user.id,
+        searchType: 'movie-click'
+      },
+      orderBy: [
+        { searchCount: 'desc' },
+        { updatedAt: 'desc' }
+      ]
+    })
+
+    // Then, fetch the top searches for other types
+    const otherTopSearches = await prisma.userSearch.findMany({
+      where: {
+        userId: session.user.id,
+        searchType: { not: 'movie-click' }
+      },
+      orderBy: [
+        { searchCount: 'desc' },
+        { updatedAt: 'desc' }
+      ],
+      take: 4 // We'll take 4 here, as we already have 1 movie-click
+    })
+
+    // Combine the results
+    const combinedResults = topMovieClick 
+      ? [topMovieClick, ...otherTopSearches]
+      : otherTopSearches
+
+    return combinedResults
+  } catch(err) {
+    console.error("Error fetching user movie recommendations:", err)
     return null
   } finally {
-    process.on('beforeExit', async () => {
-      await prisma.$disconnect()
-    })
+    await prisma.$disconnect()
   }
 }

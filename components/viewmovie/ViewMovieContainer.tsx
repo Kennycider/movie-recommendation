@@ -9,6 +9,7 @@ import TypingAnimation from "@/components/magicui/typing-animation";
 import ViewMovie from "@/lib/types/ViewMovie"
 import MovieCredits from "@/lib/types/MovieCredits"
 import { MovieItemBlurDataUrl } from "@/lib/utils"
+import storeUserMovieSearch from "@/actions/user/storeUserMovieSearch"
 
 const ViewMovieContainer = async ({id}: {id: number | string}) => {
   const [data, credits]: [ViewMovie, MovieCredits[]] = await Promise.all([
@@ -48,6 +49,22 @@ const ViewMovieContainer = async ({id}: {id: number | string}) => {
 
     return genres.join(", ")
   }
+
+  const storeMovieGenre = async () => {
+    // Check if genres are available
+    if (data?.genres?.length <= 0) return
+
+    // Store the clicked (this movie) genres to the db
+    const getGenreIds = data?.genres?.map(genre => genre.id)
+
+    for (const id of getGenreIds) {
+      storeUserMovieSearch({
+        searchType: 'movie-click',
+        searchQuery: id.toString()
+      })
+    }
+  }
+  storeMovieGenre()
 
   const getProductionCompanies = (): string => {
     const companies = data?.production_companies

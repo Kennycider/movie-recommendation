@@ -49,6 +49,8 @@ const Header = () => {
   }
 
   useEffect(() => {
+    if (status === 'loading') return
+
     // When logout/session expired, clear search result
     if (!session) {
       resetResultStore()
@@ -61,7 +63,7 @@ const Header = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [])
+  }, [status, session])
 
   const handleLogoutClick = async () => {
     signOut()
