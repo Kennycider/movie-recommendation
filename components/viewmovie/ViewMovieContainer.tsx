@@ -48,13 +48,18 @@ const ViewMovieContainer = async ({id}: {id: number | string}) => {
 
   const storeMovieGenre = async () => {
     if (data?.genres?.length > 0) {
-      const getGenreIds = data.genres.map(genre => genre.id.toString())
-      Promise.all(getGenreIds.map(id => 
-        storeUserMovieSearch({
-          searchType: 'movie-click',
-          searchQuery: id
-        })
-      )).catch(error => console.error('Error storing movie genres:', error))
+      storeUserMovieSearch({
+        searchType: 'movie-click',
+        searchQuery: 'CLICK'
+      })
+
+      // const getGenreIds = data.genres.map(genre => genre.id.toString())
+      // Promise.all(getGenreIds.map(id => 
+      //   storeUserMovieSearch({
+      //     searchType: 'movie-click',
+      //     searchQuery: id
+      //   })
+      // )).catch(error => console.error('Error storing movie genres:', error))
     }
   }
 
