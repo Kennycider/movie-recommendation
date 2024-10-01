@@ -35,10 +35,6 @@ async function addUserSearch(userId: any, searchType: string, searchQuery: strin
   } catch (error) {
     console.error('Error recording search:', error)
     throw error
-  } finally {
-    process.on('beforeExit', async () => {
-      await prisma.$disconnect()
-    })
   }
 }
 

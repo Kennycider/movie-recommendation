@@ -27,7 +27,6 @@ const ViewMovieContainer = async ({id}: {id: number | string}) => {
 
   const getReleasedYear = (): string => {
     const year = (data?.release_date).split("-")[0]
-
     return year
   }
 
@@ -36,34 +35,30 @@ const ViewMovieContainer = async ({id}: {id: number | string}) => {
     let hrs = 0
     let mins = 0
 
-    hrs = (total / 60)
-    mins = (total % 60)
+    hrs = Math.floor(total / 60)
+    mins = total % 60
 
-    return `${hrs.toFixed(0)}h ${mins}m`
+    return `${hrs}h ${mins}m`
   }
 
   const getGenres = (): string => {
-    const genres = data?.genres.map(genre => {
-      return genre.name
-    })
-
+    const genres = data?.genres.map(genre => genre.name)
     return genres.join(", ")
   }
 
   const storeMovieGenre = async () => {
-    // Check if genres are available
-    if (data?.genres?.length <= 0) return
-
-    // Store the clicked (this movie) genres to the db
-    const getGenreIds = data?.genres?.map(genre => genre.id)
-
-    for (const id of getGenreIds) {
-      storeUserMovieSearch({
-        searchType: 'movie-click',
-        searchQuery: id.toString()
-      })
+    if (data?.genres?.length > 0) {
+      const getGenreIds = data.genres.map(genre => genre.id.toString())
+      Promise.all(getGenreIds.map(id => 
+        storeUserMovieSearch({
+          searchType: 'movie-click',
+          searchQuery: id
+        })
+      )).catch(error => console.error('Error storing movie genres:', error))
     }
   }
+
+  // Call storeMovieGenre without awaiting it
   storeMovieGenre()
 
   const getProductionCompanies = (): string => {
@@ -204,7 +199,7 @@ const MoreDetailsSection = ({
               {val}
             </p>
           ))}
-          {!!MovieCredits() &&
+          {MovieCredits().length === 0 &&
             <p className="text-md text-lightWhite lg:line-clamp-2">
               N/A
             </p>
