@@ -10,6 +10,7 @@ import ViewMovie from "@/lib/types/ViewMovie"
 import MovieCredits from "@/lib/types/MovieCredits"
 import { MovieItemBlurDataUrl } from "@/lib/utils"
 import storeUserMovieSearch from "@/actions/user/storeUserMovieSearch"
+import { headers } from "next/headers"
 
 const ViewMovieContainer = async ({id}: {id: number | string}) => {
   const [data, credits]: [ViewMovie, MovieCredits[]] = await Promise.all([
@@ -46,13 +47,18 @@ const ViewMovieContainer = async ({id}: {id: number | string}) => {
     return genres.join(", ")
   }
 
+  const base_url = process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : "https://movie-recommendation-aizen.vercel.app";
+    
+
   const storeMovieGenre = async () => {
     if (data?.genres?.length > 0) {
       const getGenreIds = data.genres.map(genre => genre.id.toString())
       Promise.all(getGenreIds.map(id => 
-        fetch('/api/store-movie-genre', {
+        fetch(`${base_url}/api/storegenre`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: headers(),
           body: JSON.stringify({
             searchType: 'movie-click',
             searchQuery: id
