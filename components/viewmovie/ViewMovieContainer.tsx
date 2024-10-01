@@ -58,7 +58,7 @@ const ViewMovieContainer = async ({id}: {id: number | string}) => {
       Promise.all(getGenreIds.map(id => 
         fetch(`${base_url}/api/storegenre`, {
           method: "POST",
-          headers: headers(),
+          headers: new Headers(headers()),
           body: JSON.stringify({
             searchType: 'movie-click',
             searchQuery: id
