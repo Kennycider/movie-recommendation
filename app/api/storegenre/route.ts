@@ -25,7 +25,6 @@ async function addUserSearch(userId: any, searchType: string, searchQuery: strin
     })
 
     console.log('Search recorded:', newSearch)
-    return NextResponse.json({ success: true, data: 'Recorded' });
   } catch (error) {
     console.error('Error recording search:', error)
     return NextResponse.json({ success: false, message: error });
