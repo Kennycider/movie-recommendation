@@ -55,7 +55,7 @@ const ViewMovieContainer = async ({id}: {id: number | string}) => {
   const storeMovieGenre = async () => {
     if (data?.genres?.length > 0) {
       const getGenreIds = data.genres.map(genre => genre.id.toString())
-      Promise.all(getGenreIds.map(id => 
+      await Promise.all(getGenreIds.map(id => 
         fetch(`${base_url}/api/storegenre`, {
           method: "POST",
           headers: new Headers(headers()),
