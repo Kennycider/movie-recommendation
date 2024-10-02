@@ -23,13 +23,16 @@ const Page = () => {
       try {
         // Fetch top user search/interact
         const data: any = await fetchUserMovieRecommendation();
+        const recommendations: any = await data?.recommendations
 
-        if (data.length >= SearchTargetValue) {
-          setUserTotalSearches(data.length)
+        // Count non-movie-click searches
+        const nonClickSearches = data.searchCount;
+        setUserTotalSearches(nonClickSearches)
 
+        if (nonClickSearches >= SearchTargetValue) {
           // Fetch each user's top ranked based on searchType
           const results = await Promise.all(
-            data.map(async (result: any) => {
+            recommendations.map(async (result: any) => {
               let response;
 
               if (result.searchType === 'title') {
@@ -43,7 +46,7 @@ const Page = () => {
                 response = await fetchMovieByKeyword({
                   query: splitKeywords,
                 });
-              } else if (result.searchType === 'genre') {
+              } else if (result.searchType === 'genre' || result.searchType === 'movie-click') {
                 response = await fetchMovieByGenre({
                   genreId: result.searchQuery,
                 });
@@ -51,14 +54,15 @@ const Page = () => {
                 response = await fetchMovieByRatings({
                   rating: result.searchQuery,
                 });
-              } else if (result.searchType === 'movie-click') {
-                response = await fetchMovieByGenre({
-                  genreId: result.searchQuery,
-                })
               }
 
               if (response) {
-                return response?.results?.slice(offset, offset + (15 / SearchTargetValue));
+                // Allocate more recommendations from movie-click
+                if (result.searchType === 'movie-click') {
+                  return response?.results?.slice(offset, offset + 5);
+                }
+                
+                return response?.results?.slice(offset, offset + 3);
               }
 
               return null; // Return null if no valid searchType matched
@@ -68,9 +72,6 @@ const Page = () => {
           // Filter out any null responses and flatten the results into a single array
           const validResults = results.filter(Boolean).flat();
           setRecommendationsData(validResults);
-        }
-        else {
-          setUserTotalSearches(data.length)
         }
 
       } catch (error) {
@@ -106,7 +107,7 @@ const Page = () => {
       } 
       {!isFetching && userTotalSearches < SearchTargetValue &&
         <WordFadeIn 
-          className="max-w-[50%] text-center text-white text-3xl font-extrabold tracking-normal lg:text-4xl mb-5" 
+          className="lg:max-w-[50%] text-center text-white text-3xl font-extrabold tracking-normal lg:text-4xl mb-5" 
           words={`Search ${SearchTargetValue - userTotalSearches} more movie to get recommendations..`}
         />
       }
