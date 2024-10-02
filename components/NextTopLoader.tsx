@@ -4,7 +4,7 @@ const Page = () => {
   return (
     <NextTopLoader 
       color='#d12424'
-      height={5}
+      height={4}
       crawl={true}
       showSpinner={false}
     />
