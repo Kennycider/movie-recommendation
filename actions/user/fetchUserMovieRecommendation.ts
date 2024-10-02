@@ -12,7 +12,20 @@ export default async function fetchUserMovieRecommendation() {
   }
 
   try {
-    // First, fetch the top 'movie-click' search
+    // Fetch the top 5 searches (excluding 'movie-click')
+    const topSearches = await prisma.userSearch.findMany({
+      where: {
+        userId: session.user.id,
+        searchType: { not: 'movie-click' }
+      },
+      orderBy: [
+        { searchCount: 'desc' },
+        { updatedAt: 'desc' }
+      ],
+      take: 5
+    })
+
+    // Fetch the top 'movie-click' search
     const topMovieClick = await prisma.userSearch.findFirst({
       where: {
         userId: session.user.id,
@@ -24,25 +37,15 @@ export default async function fetchUserMovieRecommendation() {
       ]
     })
 
-    // Then, fetch the top searches for other types
-    const otherTopSearches = await prisma.userSearch.findMany({
-      where: {
-        userId: session.user.id,
-        searchType: { not: 'movie-click' }
-      },
-      orderBy: [
-        { searchCount: 'desc' },
-        { updatedAt: 'desc' }
-      ],
-      take: 4 // We'll take 4 here, as we already have 1 movie-click
-    })
-
     // Combine the results
     const combinedResults = topMovieClick 
-      ? [topMovieClick, ...otherTopSearches]
-      : otherTopSearches
+      ? [topMovieClick, ...topSearches]
+      : topSearches
 
-    return combinedResults
+    return {
+      recommendations: combinedResults,
+      searchCount: topSearches.length
+    }
   } catch(err) {
     console.error("Error fetching user movie recommendations:", err)
     return null
