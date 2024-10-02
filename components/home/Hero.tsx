@@ -64,7 +64,7 @@ const Hero = () => {
           </div>
 
           <VelocityScroll
-            text="Find, Stream, and Fall in Love with Cinema"
+            text="Find, Review, and Fall in Love with Cinema you'd like!"
             default_velocity={5}
             className="mt-16 lg:mt-40 font-display text-center text-4xl font-bold tracking-[-0.02em] text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]
             dark:text-white md:text-5xl md:leading-[5rem]"
