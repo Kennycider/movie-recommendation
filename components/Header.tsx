@@ -104,8 +104,8 @@ const Header = () => {
 
   return (
     <>
-      <header className={`sticky top-0 z-30 w-full flex justify-between items-center h-20 px-12 lg:px-64 
-                        ${isHeaderScrolled ? 'bg-lightBlack' : 'bg-lightBlack'} transition-colors duration-300`}
+      <header className={`sticky top-0 z-30 w-full flex justify-between items-center h-20 px-12 lg:px-64
+                        ${isHeaderScrolled ? 'bg-black' : 'bg-lightBlack'} transition-colors duration-300`}
       >
         {/* Large screen: Web icon */}
         <div className="">
@@ -132,7 +132,7 @@ const Header = () => {
         {/* Mobile screen: Hamburger icon */}
         <nav className="lg:hidden">
           <Image 
-            src="https://img.icons8.com/?size=100&id=8113&format=png&color=FFFFFF"
+            src="/icons/Hamburger-White.png"
             alt="Hamburger"
             width={35}
             height={35}
